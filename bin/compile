@@ -4,9 +4,8 @@ BUILD_DIR=$(cd $1 && pwd)
 CACHE_DIR=$(cd $2 && pwd)
 ENV_DIR=$(cd $3 && pwd)
 
-echo Listing $BUILD_DIR && ls -lah $BUILD_DIR
-echo Listing $CACHE_DIR && ls -lah $CACHE_DIR
-echo Listing $ENV_DIR   && ls -lah $ENV_DIR
+echo "Listing $BUILD_DIR/node_modules"         && ls -lah $BUILD_DIR/node_modules
+echo "Listing npm bin directory: $(npm bin)"   && ls -lah $(npm bin)
 
 BUILDPACK_PATH==$(cd $(dirname $(dirname $0)); pwd)
 
