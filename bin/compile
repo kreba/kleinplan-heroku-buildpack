@@ -10,6 +10,7 @@ export POOL_SIZE=$(cat $ENV_DIR/POOL_SIZE)
 export PORT=$(cat $ENV_DIR/PORT)
 export SECRET_KEY_BASE=$(cat $ENV_DIR/SECRET_KEY_BASE)
 export SECRET_KEY_GUARDIAN=$(cat $ENV_DIR/SECRET_KEY_GUARDIAN)
+export KLEINPLAN_GRAPHQL_API_URL=$(cat $ENV_DIR/KLEINPLAN_GRAPHQL_API_URL)
 
 echo "-----> Precompiling Kleinplan specific assets..."
 
