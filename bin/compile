@@ -38,6 +38,7 @@ mix absinthe.schema.json --schema KleinplanGraphQL.Schema priv/static/schema.jso
 rm priv/static/cache_manifest.json
 
 # Compile the GUI
+# NB: This relies on the heroku config NPM_CONFIG_PRODUCTION=false since webpack is a devDependency.
 $(npm bin)/webpack --profile --display-modules
 
 # Now produce the asset digests and the real cache_manifest.json
