@@ -4,11 +4,7 @@ BUILD_DIR=$(cd $1 && pwd)
 CACHE_DIR=$(cd $2 && pwd)
 ENV_DIR=$(cd $3 && pwd)
 
-echo "Listing $BUILD_DIR/node_modules/.bin"         && ls -lah $BUILD_DIR/node_modules/.bin
-
-BUILDPACK_PATH==$(cd $(dirname $(dirname $0)); pwd)
-
-# The heroku-buildpack-elixir uses a generic function for this. Might steal... :)
+# The heroku-buildpack-elixir uses a generic function for this. Meh.
 export DATABASE_URL=$(cat $ENV_DIR/DATABASE_URL)
 export POOL_SIZE=$(cat $ENV_DIR/POOL_SIZE)
 export PORT=$(cat $ENV_DIR/PORT)
@@ -25,9 +21,6 @@ set -o xtrace    # Echo all commands as they are executed
 # We operate in the temporary directory where the release is being prepared
 cd $BUILD_DIR
 
-echo "Listing npm bin directory: $(npm bin)"   && ls -lah $(npm bin)
-echo "Listing webpack bin"                     && ls -lah $(npm bin)/webpack
-
 # The following mix task will fail on Heroku if this file is missing, hence we create a dummy
 mkdir -p priv/static && touch priv/static/cache_manifest.json
 
@@ -37,8 +30,8 @@ mix absinthe.schema.json --schema KleinplanGraphQL.Schema priv/static/schema.jso
 # Remove the dummy (empty files are hard to digest)
 rm priv/static/cache_manifest.json
 
-# Compile the GUI
-# NB: This relies on the heroku config NPM_CONFIG_PRODUCTION=false since webpack is a devDependency.
+# Compile the GUI (jepp, we need those devDependencies, too)
+NPM_ENV=development npm install
 $(npm bin)/webpack --profile --display-modules
 
 # Now produce the asset digests and the real cache_manifest.json
