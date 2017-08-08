@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Usage: compile BUILD_DIR CACHE_DIR ENV_DIR
+BUILD_DIR=$(cd $1 && pwd)
+CACHE_DIR=$(cd $2 && pwd)
+ENV_DIR=$(cd $3 && pwd)
+
+echo "-----> Precompiling Kleinplan specific assets..."
+
+# See https://ss64.com/bash/set.html
+set -o errexit   # Always exit on error
+set -o pipefail  # Don't ignore exit codes when piping output
+set -o xtrace    # Echo all commands as they are executed
+
+# We operate in the temporary directory where the release is being prepared
+cd $BUILD_DIR
+
+# The following mix task will fail on Heroku if this file is missing, hence we create a dummy
+mkdir -p priv/static && touch priv/static/cache_manifest.json
+
+# Generate the GraphQL schema from elixir sources
+mix absinthe.schema.json --schema KleinplanGraphQL.Schema priv/static/schema.json
+
+# Remove the dummy (empty files are hard to digest)
+rm priv/static/cache_manifest.json
+
+# Compile the frontend
+$(npm bin)/webpack --profile --display-modules
+
+# Now produce the asset digests and the real cache_manifest.json
+mix phx.digest priv/static

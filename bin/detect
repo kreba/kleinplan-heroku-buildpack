@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Usage: detect BUILD_DIR
+BUILD_DIR=${1:-}
+
+echo "Kleinplan"
+exit 0
