@@ -4,6 +4,15 @@ BUILD_DIR=$(cd $1 && pwd)
 CACHE_DIR=$(cd $2 && pwd)
 ENV_DIR=$(cd $3 && pwd)
 
+BUILDPACK_PATH==$(cd $(dirname $(dirname $0)); pwd)
+
+# The heroku-buildpack-elixir uses a generic function for this. Might steal... :)
+export DATABASE_URL=$(cat $ENV_DIR/DATABASE_URL)
+export POOL_SIZE=$(cat $ENV_DIR/POOL_SIZE)
+export PORT=$(cat $ENV_DIR/PORT)
+export SECRET_KEY_BASE=$(cat $ENV_DIR/SECRET_KEY_BASE)
+export SECRET_KEY_GUARDIAN=$(cat $ENV_DIR/SECRET_KEY_GUARDIAN)
+
 echo "-----> Precompiling Kleinplan specific assets..."
 
 # See https://ss64.com/bash/set.html
