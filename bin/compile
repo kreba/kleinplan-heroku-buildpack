@@ -25,6 +25,10 @@ cd $BUILD_DIR
 # The following mix task will fail on Heroku if this file is missing, hence we create a dummy
 mkdir -p priv/static && touch priv/static/cache_manifest.json
 
+# Absinthe only works right when freshly installed... :/
+mix deps.clean absinthe
+mix deps.get
+
 # Generate the GraphQL schema from elixir sources
 mix absinthe.schema.json --schema KleinplanGraphQL.Schema priv/static/schema.json
 
