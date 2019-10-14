@@ -31,14 +31,14 @@ mix deps.get
 mix compile
 
 # Generate the GraphQL schema from elixir sources
-# The app.start is required because of an absinthe bug: https://github.com/absinthe-graphql/absinthe/issues/487
-mix do app.start, absinthe.schema.json priv/static/schema.json
+mix absinthe.schema.json ./priv/static/schema.json --json-codec Poison --pretty true
 
 # Remove the dummy (empty files are hard to digest)
 rm priv/static/cache_manifest.json
 
 # Compile the GUI (jepp, we need those devDependencies, too)
 NPM_ENV=development npm install
+$(npm bin)/apollo client:codegen --target=typescript --outputFlat ./lib/kleinplan_gui/store/GraphqlTypes.ts
 $(npm bin)/webpack --profile --display-modules
 
 # Now produce the asset digests and the real cache_manifest.json
