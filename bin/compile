@@ -22,24 +22,16 @@ set -o xtrace    # Echo all commands as they are executed
 # We operate in the temporary directory where the release is being prepared
 cd $BUILD_DIR
 
-# The following mix task will fail on Heroku if this file is missing, hence we create a dummy
-mkdir -p priv/static && touch priv/static/cache_manifest.json
-
-# Absinthe only works right when freshly installed... :/
-mix deps.clean absinthe
 mix deps.get
 mix compile
 
 # Generate the GraphQL schema from elixir sources
 mix absinthe.schema.json ./priv/static/schema.json --json-codec Poison --pretty true
 
-# Remove the dummy (empty files are hard to digest)
-rm priv/static/cache_manifest.json
-
 # Compile the GUI (jepp, we need those devDependencies, too)
 NPM_ENV=development npm install
 $(npm bin)/apollo client:codegen --target=typescript --outputFlat ./lib/kleinplan_gui/store/GraphqlTypes.ts
 $(npm bin)/webpack --profile --display-modules
 
-# Now produce the asset digests and the real cache_manifest.json
+# Now produce the asset digests and the cache_manifest.json
 mix phx.digest priv/static
