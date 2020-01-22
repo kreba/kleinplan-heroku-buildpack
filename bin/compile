@@ -29,9 +29,11 @@ mix compile
 mix absinthe.schema.json ./priv/static/schema.json --json-codec Poison --pretty true
 
 # Compile the GUI (jepp, we need those devDependencies, too)
+cd lib/kleinplan_gui
 NPM_ENV=development yarn install
-$(yarn bin)/apollo client:codegen --target=typescript --outputFlat ./lib/kleinplan_gui/store/GraphqlTypes.ts
-$(yarn bin)/webpack --profile --display-modules
+$(yarn bin)/apollo client:codegen --target=typescript --outputFlat ./src/apollo/GraphqlTypes.ts
+$(yarn bin)/webpack --profile --display-modules --color --progress
+cd -
 
 # Now produce the asset digests and the cache_manifest.json
 mix phx.digest priv/static
